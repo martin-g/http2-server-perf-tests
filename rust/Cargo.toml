@@ -1,0 +1,14 @@
+[package]
+name = "my-http2-server"
+version = "0.0.1"
+publish = false
+authors = ["Martin Grigorov <mgrigorov@apache.org>"]
+license = "MIT/Apache-2.0"
+description = "Load test HTTP/2 "
+repository = "https://github.com/martin-g/http2-server-perf-tests"
+keywords = ["http2"]
+edition = "2018"
+
+[dependencies]
+actix-web = { version = "3", features = ["openssl"] }
+openssl = { version = "0.10", features = ["v110"] }
