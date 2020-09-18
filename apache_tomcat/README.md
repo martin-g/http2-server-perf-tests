@@ -15,8 +15,8 @@ to a `Connector`
         
         <UpgradeProtocol 
             className="org.apache.coyote.http2.Http2Protocol"
-            maxConcurrentStreams="1024" 
-            maxConcurrentStreamExecution="1024"/>
+            maxConcurrentStreams="16" 
+            maxConcurrentStreamExecution="16"/>
         
         <SSLHostConfig>
             <Certificate 
@@ -24,7 +24,7 @@ to a `Connector`
                 certificateFile="/path/to/server.crt"
                 type="RSA" />
         </SSLHostConfig>
-        
+
     </Connector>
 
 # Run
