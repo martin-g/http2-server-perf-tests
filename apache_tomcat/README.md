@@ -8,13 +8,23 @@ To enable HTTP2 in Apache Tomcat one needs to add `UpgradeProtocol` element
 
 to a `Connector`
 
-    <Connector port="18080" protocol="org.apache.coyote.http11.Http11NioProtocol" SSLEnabled="true" >
-        <UpgradeProtocol className="org.apache.coyote.http2.Http2Protocol"/>
+    <Connector port="18080" 
+        maxThreads="8" 
+        protocol="org.apache.coyote.http11.Http11NioProtocol" 
+        SSLEnabled="true" >
+        
+        <UpgradeProtocol 
+            className="org.apache.coyote.http2.Http2Protocol"
+            maxConcurrentStreams="1024" 
+            maxConcurrentStreamExecution="1024"/>
+        
         <SSLHostConfig>
-          <Certificate certificateKeyFile="/path/to/server.key"
-                         certificateFile="/path/to/server.crt"
-                         type="RSA" />
+            <Certificate 
+                certificateKeyFile="/path/to/server.key"
+                certificateFile="/path/to/server.crt"
+                type="RSA" />
         </SSLHostConfig>
+        
     </Connector>
 
 # Run
