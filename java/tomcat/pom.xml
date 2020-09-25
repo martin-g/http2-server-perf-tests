@@ -11,6 +11,7 @@
     <properties>
         <java.version>15</java.version>
         <tomcat.version>9.0.38</tomcat.version>
+        <tomcat-embed.version>${tomcat.version}</tomcat-embed.version>
     </properties>
 
 
@@ -18,6 +19,11 @@
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
+            <version>${tomcat-embed.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-annotations-api</artifactId>
             <version>${tomcat.version}</version>
         </dependency>
     </dependencies>
