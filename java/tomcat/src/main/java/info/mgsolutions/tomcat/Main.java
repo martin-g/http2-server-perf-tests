@@ -16,7 +16,7 @@ public class Main {
         Tomcat tomcat = new Tomcat();
         tomcat.setPort(8080);
 
-        StandardContext ctx = (StandardContext) tomcat.addContext("/", new File(".").getAbsolutePath());
+        StandardContext ctx = (StandardContext) tomcat.addContext("", new File(".").getAbsolutePath());
 
         Tomcat.addServlet(ctx, "plaintext", PlainTextServlet.class.getName());
         ctx.addServletMappingDecoded("/testbed/plaintext", "plaintext");
@@ -24,11 +24,15 @@ public class Main {
         final Connector connector = tomcat.getConnector();
         final boolean h2c = Boolean.getBoolean("tomcat.h2c");
         final boolean http2 = Boolean.getBoolean("tomcat.http2");
-        if (h2c) {
+        boolean tls = Boolean.getBoolean("tomcat.tls");
+        if (h2c || http2) {
             connector.addUpgradeProtocol(new Http2Protocol());
+            if (http2) {
+                tls = true;
+            }
         }
-        else if (http2) {
-            connector.addUpgradeProtocol(new Http2Protocol());
+
+        if (tls) {
             connector.setScheme("https");
             connector.setSecure(true);
             connector.setProperty("sslProtocol", "TLS");
@@ -36,6 +40,7 @@ public class Main {
             connector.setProperty("SSLCertificateFile", TESTBED_HOME + "/etc/tls/server.pem");
             connector.setProperty("SSLCertificateKeyFile", TESTBED_HOME + "/etc/tls/server.key");
         }
+
         System.out.println("Starting on port: " + connector);
         tomcat.start();
         System.out.println("Started");
