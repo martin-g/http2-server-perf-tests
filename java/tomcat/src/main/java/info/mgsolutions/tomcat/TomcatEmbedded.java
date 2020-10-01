@@ -16,7 +16,6 @@ public class TomcatEmbedded {
     public static void main(String[] args) throws Exception {
 
         Tomcat tomcat = new Tomcat();
-//        tomcat.setPort(8080);
 
         StandardContext ctx = (StandardContext) tomcat.addContext("", new File(".").getAbsolutePath());
 
