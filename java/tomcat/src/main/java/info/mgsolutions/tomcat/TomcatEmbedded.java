@@ -12,6 +12,7 @@ import java.io.File;
 public class TomcatEmbedded {
 
     private static final String TESTBED_HOME = System.getenv("TESTBED_HOME");
+    private static final String PORT = System.getenv("PORT");
 
     public static void main(String[] args) throws Exception {
 
@@ -26,10 +27,10 @@ public class TomcatEmbedded {
         async.setAsyncSupported(true);
         ctx.addServletMappingDecoded("/testbed/asyncplaintext", "asyncplaintext");
 
-        final String protocolName = System.getProperty("tomcat.connector", Http11NioProtocol.class.getName());
+        final String protocolName = System.getProperty("tomcat.protocol", Http11NioProtocol.class.getName());
         Connector connector = new Connector(protocolName);
         tomcat.setConnector(connector);
-        connector.setPort(8080);
+        connector.setPort(Integer.parseInt(PORT, 10));
         connector.setProperty("maxThreads", "8");
 
         final boolean h2c = Boolean.getBoolean("tomcat.h2c");
