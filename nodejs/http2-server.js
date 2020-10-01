@@ -10,7 +10,6 @@ const server = http2.createSecureServer({
 server.on('error', (err) => console.error(err));
 
 server.on('stream', (stream, headers) => {
-    // stream is a Duplex
     stream.respond({
         'content-type': 'text/plain; charset=utf-8',
         ':status': 200
@@ -18,4 +17,4 @@ server.on('stream', (stream, headers) => {
     stream.end('Hello world!');
 });
 
-server.listen(18080);
+server.listen(8080);

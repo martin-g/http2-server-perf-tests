@@ -17,7 +17,7 @@ import io.netty.handler.ssl.SslContext;
 
 public final class Http2Server {
 
-    private static final int PORT = 18080;
+    private static final int PORT = 8080;
     private static final Logger logger = LoggerFactory.getLogger(Http2Server.class);
 
     public static void main(String[] args) throws Exception {
