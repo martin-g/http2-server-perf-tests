@@ -28,6 +28,7 @@ public class TomcatEmbedded {
         ctx.addServletMappingDecoded("/testbed/asyncplaintext", "asyncplaintext");
 
         final String protocolName = System.getProperty("tomcat.protocol", Http11NioProtocol.class.getName());
+        System.out.println("=== Protocol: " + protocolName);
         Connector connector = new Connector(protocolName);
         tomcat.setConnector(connector);
         connector.setPort(Integer.parseInt(PORT, 10));
@@ -52,10 +53,10 @@ public class TomcatEmbedded {
             connector.setProperty("SSLCertificateKeyFile", TESTBED_HOME + "/etc/tls/server.key");
         }
 
-        System.out.println("Starting on port: " + connector);
+        System.out.println("=== Starting on port: " + connector);
         tomcat.start();
-        System.out.println("Started");
+        System.out.println("=== Started");
         tomcat.getServer().await();
-        System.out.println("Stopped");
+        System.out.println("=== Stopped");
     }
 }
