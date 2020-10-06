@@ -2,7 +2,7 @@
 
 The code is borrowed from https://actix.rs/docs/http2/
 
-Run the server with: `cargo run`
+Run the server with: `cargo run --release`
 
     echo -e '{"method": "GET", "url": "https://localhost:18080/"}' | vegeta attack -format=json -http2 -rate=0 -max-workers=1000 -insecure -duration=20s | vegeta encode > /tmp/http2.json; and vegeta report -type=json /tmp/http2.json | jq .
 
