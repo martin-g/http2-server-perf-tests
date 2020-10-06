@@ -2,8 +2,10 @@ package info.mgsolutions.tomcat;
 
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
+import org.apache.catalina.core.AprLifecycleListener;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.coyote.http11.Http11AprProtocol;
 import org.apache.coyote.http11.Http11NioProtocol;
 import org.apache.coyote.http2.Http2Protocol;
 
@@ -30,6 +32,9 @@ public class TomcatEmbedded {
         final String protocolName = System.getProperty("tomcat.protocol", Http11NioProtocol.class.getName());
         System.out.println("=== Protocol: " + protocolName);
         Connector connector = new Connector(protocolName);
+        if (Http11AprProtocol.class.getName().equals(protocolName)) {
+            connector.addLifecycleListener(new AprLifecycleListener());
+        }
         tomcat.setConnector(connector);
         connector.setPort(Integer.parseInt(PORT, 10));
         connector.setProperty("maxThreads", "8");
