@@ -15,6 +15,7 @@ public class TomcatEmbedded {
 
     private static final String TESTBED_HOME = System.getenv("TESTBED_HOME");
     private static final String PORT = System.getenv("PORT");
+    private static final String MAX_THREADS = System.getProperty("tomcat.maxThreads", "200");
 
     public static void main(String[] args) throws Exception {
 
@@ -37,7 +38,7 @@ public class TomcatEmbedded {
         }
         tomcat.setConnector(connector);
         connector.setPort(Integer.parseInt(PORT, 10));
-        connector.setProperty("maxThreads", "8");
+        connector.setProperty("maxThreads", MAX_THREADS);
 
         final boolean h2c = Boolean.getBoolean("tomcat.h2c");
         final boolean http2 = Boolean.getBoolean("tomcat.http2");
