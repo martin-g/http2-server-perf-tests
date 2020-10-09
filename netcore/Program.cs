@@ -26,7 +26,7 @@ namespace netcore_http2
                         options.Listen(IPAddress.Any, 8080, listenOptions =>
                         {
                             listenOptions.Protocols = HttpProtocols.Http2;
-                            X509Certificate2 cert = new X509Certificate2(X509Certificate.CreateFromCertFile("server.crt"));
+                            X509Certificate2 cert = new X509Certificate2("server.pfx", args[0]);
                             listenOptions.UseHttps(cert);
                         });
                     })
@@ -48,6 +48,6 @@ namespace netcore_http2
                             });
                         });
                     });
-                });
+                });               
     }
 }
