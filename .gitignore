@@ -25,4 +25,10 @@ hs_err_pid*
 #dotnet
 bin/
 obj/
-server.crt
+
+#certificates
+*.crt
+*.csr
+*.key
+*.pem
+*.pfx
