@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace netcore_http2
 {
@@ -13,17 +14,19 @@ namespace netcore_http2
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            int port = 8080;
+            Console.WriteLine($"Listening on {port}");
+            CreateHostBuilder(args, port).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        public static IHostBuilder CreateHostBuilder(string[] args, int port) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
                     .ConfigureKestrel(options =>
                     {
-                        options.Listen(IPAddress.Any, 8080, listenOptions =>
+                        options.Listen(IPAddress.Any, port, listenOptions =>
                         {
                             listenOptions.Protocols = HttpProtocols.Http2;
                             X509Certificate2 cert = new X509Certificate2("server.pfx", args[0]);
