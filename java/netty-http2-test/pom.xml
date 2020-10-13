@@ -11,7 +11,7 @@
     <properties>
         <application.class>com.example.netty.http2.Http2Server</application.class>
         <java.version>15</java.version>
-        <netty.version>4.1.52.Final</netty.version>
+        <netty.version>4.1.53.Final</netty.version>
     </properties>
 
     <dependencies>
@@ -39,6 +39,7 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.4</version>
                 <executions>
