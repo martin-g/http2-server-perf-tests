@@ -10,7 +10,7 @@
 
     <properties>
         <java.version>15</java.version>
-        <tomcat.version>9.0.38</tomcat.version>
+        <tomcat.version>9.0.39</tomcat.version>
         <tomcat-embed.version>${tomcat.version}</tomcat-embed.version>
     </properties>
 
@@ -30,6 +30,19 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.graalvm.nativeimage</groupId>
+                <artifactId>native-image-maven-plugin</artifactId>
+                <version>20.2.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>native-image</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
