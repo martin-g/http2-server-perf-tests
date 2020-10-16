@@ -15,7 +15,7 @@ public class TomcatEmbedded {
 
     private static final String TESTBED_HOME = System.getenv("TESTBED_HOME");
     private static final String PORT = System.getenv("PORT");
-    private static final String MAX_THREADS = System.getProperty("tomcat.maxThreads", "200");
+    private static final String MAX_THREADS = System.getenv("TOMCAT_MAX_THREADS");
 
     public static void main(String[] args) throws Exception {
 
@@ -30,7 +30,10 @@ public class TomcatEmbedded {
         async.setAsyncSupported(true);
         ctx.addServletMappingDecoded("/testbed/asyncplaintext", "asyncplaintext");
 
-        final String protocolName = System.getProperty("tomcat.protocol", Http11NioProtocol.class.getName());
+        String protocolName = System.getenv("TOMCAT_PROTOCOL");
+        if (protocolName == null) {
+            protocolName = Http11NioProtocol.class.getName();
+        }
         System.out.println("=== Protocol: " + protocolName);
         Connector connector = new Connector(protocolName);
         if (Http11AprProtocol.class.getName().equals(protocolName)) {
@@ -38,7 +41,7 @@ public class TomcatEmbedded {
         }
         tomcat.setConnector(connector);
         connector.setPort(Integer.parseInt(PORT, 10));
-        connector.setProperty("maxThreads", MAX_THREADS);
+        connector.setProperty("maxThreads", MAX_THREADS != null ? MAX_THREADS : "200");
 
         final boolean h2c = Boolean.getBoolean("tomcat.h2c");
         final boolean http2 = Boolean.getBoolean("tomcat.http2");
