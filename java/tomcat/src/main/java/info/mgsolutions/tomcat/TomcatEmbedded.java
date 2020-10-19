@@ -16,6 +16,9 @@ public class TomcatEmbedded {
     private static final String TESTBED_HOME = System.getenv("TESTBED_HOME");
     private static final String PORT = System.getenv("PORT");
     private static final String MAX_THREADS = System.getenv("TOMCAT_MAX_THREADS");
+    private static final String TOMCAT_H2C = System.getenv("TOMCAT_H2C");
+    private static final String TOMCAT_HTTP2 = System.getenv("TOMCAT_HTTP2");
+    private static final String TOMCAT_TLS = System.getenv("TOMCAT_TLS");
 
     public static void main(String[] args) throws Exception {
 
@@ -43,9 +46,9 @@ public class TomcatEmbedded {
         connector.setPort(Integer.parseInt(PORT, 10));
         connector.setProperty("maxThreads", MAX_THREADS != null ? MAX_THREADS : "200");
 
-        final boolean h2c = Boolean.getBoolean("tomcat.h2c");
-        final boolean http2 = Boolean.getBoolean("tomcat.http2");
-        boolean tls = Boolean.getBoolean("tomcat.tls");
+        final boolean h2c = TOMCAT_H2C != null;
+        final boolean http2 = TOMCAT_HTTP2 != null;
+        boolean tls = TOMCAT_TLS != null;
         if (h2c || http2) {
             connector.addUpgradeProtocol(new Http2Protocol());
             if (http2) {
