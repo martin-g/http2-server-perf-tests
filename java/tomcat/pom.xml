@@ -9,6 +9,8 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
         <tomcat.version>9.0.39</tomcat.version>
         <tomcat-embed.version>${tomcat.version}</tomcat-embed.version>
@@ -42,6 +44,10 @@
                         <phase>package</phase>
                     </execution>
                 </executions>
+                <configuration>
+                    <imageName>embedded-tomcat-http2</imageName>
+                    <buildArgs>--no-fallback --report-unsupported-elements-at-runtime --allow-incomplete-classpath</buildArgs>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
