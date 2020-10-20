@@ -6,6 +6,7 @@ import org.apache.catalina.core.AprLifecycleListener;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.coyote.http11.Http11AprProtocol;
+import org.apache.coyote.http11.Http11Nio2Protocol;
 import org.apache.coyote.http11.Http11NioProtocol;
 import org.apache.coyote.http2.Http2Protocol;
 
@@ -34,9 +35,16 @@ public class TomcatEmbedded {
         ctx.addServletMappingDecoded("/testbed/asyncplaintext", "asyncplaintext");
 
         String protocolName = System.getenv("TOMCAT_PROTOCOL");
-        if (protocolName == null) {
+        if (protocolName == null || "nio".equals(protocolName)) {
             protocolName = Http11NioProtocol.class.getName();
+        } else if ("nio2".equals(protocolName)) {
+            protocolName = Http11Nio2Protocol.class.getName();
+        } else if ("apr".equals(protocolName)) {
+            protocolName = Http11AprProtocol.class.getName();
+        } else {
+            throw new IllegalArgumentException("Unknown protocol name: " + protocolName);
         }
+
         System.out.println("=== Protocol: " + protocolName);
         Connector connector = new Connector(protocolName);
         if (Http11AprProtocol.class.getName().equals(protocolName)) {
