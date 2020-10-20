@@ -26,10 +26,10 @@ public class TomcatEmbedded {
 
         StandardContext ctx = (StandardContext) tomcat.addContext("", new File(".").getAbsolutePath());
 
-        Tomcat.addServlet(ctx, "plaintext", PlainTextServlet.class.getName());
+        Tomcat.addServlet(ctx, "plaintext", new PlainTextServlet());
         ctx.addServletMappingDecoded("/testbed/plaintext", "plaintext");
 
-        final Wrapper async = Tomcat.addServlet(ctx, "asyncplaintext", AsyncPlainTextServlet.class.getName());
+        final Wrapper async = Tomcat.addServlet(ctx, "asyncplaintext", new AsyncPlainTextServlet());
         async.setAsyncSupported(true);
         ctx.addServletMappingDecoded("/testbed/asyncplaintext", "asyncplaintext");
 
