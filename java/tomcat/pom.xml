@@ -46,7 +46,7 @@
                 </executions>
                 <configuration>
                     <imageName>embedded-tomcat-http2</imageName>
-                    <buildArgs>--no-fallback --report-unsupported-elements-at-runtime --allow-incomplete-classpath</buildArgs>
+                    <buildArgs>--no-fallback --report-unsupported-elements-at-runtime --allow-incomplete-classpath --enable-https</buildArgs>
                 </configuration>
             </plugin>
             <plugin>
