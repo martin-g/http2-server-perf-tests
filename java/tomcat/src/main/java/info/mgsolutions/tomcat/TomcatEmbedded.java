@@ -15,11 +15,8 @@ import java.io.File;
 public class TomcatEmbedded {
 
     private static final String TESTBED_HOME = System.getenv("TESTBED_HOME");
-    private static final String PORT = System.getenv("PORT");
-    private static final String MAX_THREADS = System.getenv("TOMCAT_MAX_THREADS");
-    private static final String TOMCAT_H2C = System.getenv("TOMCAT_H2C");
-    private static final String TOMCAT_HTTP2 = System.getenv("TOMCAT_HTTP2");
-    private static final String TOMCAT_TLS = System.getenv("TOMCAT_TLS");
+    private static final int PORT = Integer.getInteger("tomcat.port");
+    private static final String MAX_THREADS = System.getProperty("tomcat.maxThreads", "200");
 
     public static void main(String[] args) throws Exception {
 
@@ -34,8 +31,9 @@ public class TomcatEmbedded {
         async.setAsyncSupported(true);
         ctx.addServletMappingDecoded("/testbed/asyncplaintext", "asyncplaintext");
 
-        String protocolName = System.getenv("TOMCAT_PROTOCOL");
-        if (protocolName == null || "nio".equals(protocolName)) {
+        String protocolName = System.getProperty("tomcat.protocol", "nio");
+
+        if ("nio".equals(protocolName)) {
             protocolName = Http11NioProtocol.class.getName();
         } else if ("nio2".equals(protocolName)) {
             protocolName = Http11Nio2Protocol.class.getName();
@@ -51,12 +49,12 @@ public class TomcatEmbedded {
             connector.addLifecycleListener(new AprLifecycleListener());
         }
         tomcat.setConnector(connector);
-        connector.setPort(Integer.parseInt(PORT, 10));
-        connector.setProperty("maxThreads", MAX_THREADS != null ? MAX_THREADS : "200");
+        connector.setPort(PORT);
+        connector.setProperty("maxThreads", MAX_THREADS);
 
-        final boolean h2c = TOMCAT_H2C != null;
-        final boolean http2 = TOMCAT_HTTP2 != null;
-        boolean tls = TOMCAT_TLS != null;
+        final boolean h2c = Boolean.getBoolean("tomcat.h2c");
+        final boolean http2 = Boolean.getBoolean("tomcat.http2");
+        boolean tls = Boolean.getBoolean("tomcat.tls");
         if (h2c || http2) {
             connector.addUpgradeProtocol(new Http2Protocol());
             if (http2) {
@@ -73,7 +71,7 @@ public class TomcatEmbedded {
             connector.setProperty("SSLCertificateKeyFile", TESTBED_HOME + "/etc/tls/server.key");
         }
 
-        System.out.println("=== Starting on port: " + connector);
+        System.out.println("=== Starting : " + connector);
         tomcat.start();
         System.out.println("=== Started");
         tomcat.getServer().await();
