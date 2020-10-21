@@ -32,8 +32,9 @@ public class AsyncPlainTextServlet extends HttpServlet {
 				response.getOutputStream().write(CONTENT);
 			} catch (IOException e) {
 				e.printStackTrace();
+			} finally {
+				asyncContext.complete();
 			}
-			asyncContext.complete();
 		});
 	}
 }
