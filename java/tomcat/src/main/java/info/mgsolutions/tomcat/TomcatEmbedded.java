@@ -6,6 +6,7 @@ import org.apache.catalina.core.AprLifecycleListener;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.coyote.http11.Http11AprProtocol;
+import org.apache.coyote.http11.Http11Nio2Protocol;
 import org.apache.coyote.http11.Http11NioProtocol;
 import org.apache.coyote.http2.Http2Protocol;
 
@@ -14,7 +15,7 @@ import java.io.File;
 public class TomcatEmbedded {
 
     private static final String TESTBED_HOME = System.getenv("TESTBED_HOME");
-    private static final String PORT = System.getenv("PORT");
+    private static final int PORT = Integer.getInteger("tomcat.port");
     private static final String MAX_THREADS = System.getProperty("tomcat.maxThreads", "200");
 
     public static void main(String[] args) throws Exception {
@@ -23,21 +24,32 @@ public class TomcatEmbedded {
 
         StandardContext ctx = (StandardContext) tomcat.addContext("", new File(".").getAbsolutePath());
 
-        Tomcat.addServlet(ctx, "plaintext", PlainTextServlet.class.getName());
+        Tomcat.addServlet(ctx, "plaintext", new PlainTextServlet());
         ctx.addServletMappingDecoded("/testbed/plaintext", "plaintext");
 
-        final Wrapper async = Tomcat.addServlet(ctx, "asyncplaintext", AsyncPlainTextServlet.class.getName());
+        final Wrapper async = Tomcat.addServlet(ctx, "asyncplaintext", new AsyncPlainTextServlet());
         async.setAsyncSupported(true);
         ctx.addServletMappingDecoded("/testbed/asyncplaintext", "asyncplaintext");
 
-        final String protocolName = System.getProperty("tomcat.protocol", Http11NioProtocol.class.getName());
+        String protocolName = System.getProperty("tomcat.protocol", "nio");
+
+        if ("nio".equals(protocolName)) {
+            protocolName = Http11NioProtocol.class.getName();
+        } else if ("nio2".equals(protocolName)) {
+            protocolName = Http11Nio2Protocol.class.getName();
+        } else if ("apr".equals(protocolName)) {
+            protocolName = Http11AprProtocol.class.getName();
+        } else {
+            throw new IllegalArgumentException("Unknown protocol name: " + protocolName);
+        }
+
         System.out.println("=== Protocol: " + protocolName);
         Connector connector = new Connector(protocolName);
         if (Http11AprProtocol.class.getName().equals(protocolName)) {
             connector.addLifecycleListener(new AprLifecycleListener());
         }
         tomcat.setConnector(connector);
-        connector.setPort(Integer.parseInt(PORT, 10));
+        connector.setPort(PORT);
         connector.setProperty("maxThreads", MAX_THREADS);
 
         final boolean h2c = Boolean.getBoolean("tomcat.h2c");
@@ -59,7 +71,7 @@ public class TomcatEmbedded {
             connector.setProperty("SSLCertificateKeyFile", TESTBED_HOME + "/etc/tls/server.key");
         }
 
-        System.out.println("=== Starting on port: " + connector);
+        System.out.println("=== Starting : " + connector);
         tomcat.start();
         System.out.println("=== Started");
         tomcat.getServer().await();
