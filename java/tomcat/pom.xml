@@ -63,7 +63,7 @@
                 </executions>
                 <configuration>
                     <imageName>embedded-tomcat-http2</imageName>
-                    <buildArgs>--no-fallback --report-unsupported-elements-at-runtime --enable-https</buildArgs>
+                    <buildArgs>--no-fallback --report-unsupported-elements-at-runtime --enable-https -H:JNIConfigurationResources=META-INF/native-image/org.apache.tomcat.embed/tomcat-embed-core/tomcat-jni.json</buildArgs>
                 </configuration>
             </plugin>
             <plugin>
