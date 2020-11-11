@@ -15,7 +15,7 @@ import java.io.File;
 public class TomcatEmbedded {
 
     private static final String TESTBED_HOME = System.getenv("TESTBED_HOME");
-    private static final int PORT = Integer.getInteger("tomcat.port");
+    private static final int PORT = Integer.getInteger("tomcat.port", 8080);
     private static final String MAX_THREADS = System.getProperty("tomcat.maxThreads", "200");
 
     public static void main(String[] args) throws Exception {
