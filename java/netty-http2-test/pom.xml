@@ -10,8 +10,8 @@
 
     <properties>
         <application.class>com.example.netty.http2.Http2Server</application.class>
-        <java.version>15</java.version>
-        <netty.version>4.1.53.Final</netty.version>
+        <java.version>16</java.version>
+        <netty.version>4.1.54.Final</netty.version>
     </properties>
 
     <dependencies>
