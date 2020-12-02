@@ -1,5 +1,8 @@
 package com.example.netty.http2;
 
+import io.netty.channel.socket.ServerSocketChannel;
+import io.netty.incubator.channel.uring.IOUringEventLoopGroup;
+import io.netty.incubator.channel.uring.IOUringServerSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,8 +14,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 
 public final class Http2Server {
@@ -23,13 +24,25 @@ public final class Http2Server {
     public static void main(String[] args) throws Exception {
         final SslContext sslCtx = Http2Util.createSSLContext(true);
 
-        EventLoopGroup group = new NioEventLoopGroup();
+        EventLoopGroup group;
+        Class<? extends ServerSocketChannel> channelClass;
+        if (args.length == 1 && "io_uring".equals(args[0])) {
+            logger.info("Using io_uring !");
+            group = new IOUringEventLoopGroup();
+            channelClass = IOUringServerSocketChannel.class;
+        } else {
+            logger.info("Using NIO (epoll) !");
+            group = new NioEventLoopGroup();
+            channelClass = NioServerSocketChannel.class;
+        }
+
         try {
+
             ServerBootstrap b = new ServerBootstrap();
             b.option(ChannelOption.SO_BACKLOG, 1024);
             b.group(group)
-                .channel(NioServerSocketChannel.class)
-                .handler(new LoggingHandler(LogLevel.INFO))
+                .channel(channelClass)
+//                .handler(new LoggingHandler(LogLevel.INFO))
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
