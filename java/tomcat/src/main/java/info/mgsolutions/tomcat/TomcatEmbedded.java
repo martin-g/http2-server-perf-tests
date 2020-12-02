@@ -11,6 +11,7 @@ import org.apache.coyote.http11.Http11NioProtocol;
 import org.apache.coyote.http2.Http2Protocol;
 
 import java.io.File;
+import java.nio.channels.spi.SelectorProvider;
 
 public class TomcatEmbedded {
 

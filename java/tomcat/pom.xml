@@ -11,8 +11,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>11</java.version>
-        <tomcat.version>9.0.39</tomcat.version>
+        <java.version>16</java.version>
+        <tomcat.version>9.0.40</tomcat.version>
         <tomcat-embed.version>${tomcat.version}</tomcat-embed.version>
     </properties>
 
@@ -27,6 +27,12 @@
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-annotations-api</artifactId>
             <version>${tomcat.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty.incubator</groupId>
+            <artifactId>netty-incubator-transport-native-io_uring</artifactId>
+            <version>0.0.2.Final-SNAPSHOT</version>
+            <classifier>linux-x86_64</classifier>
         </dependency>
 
         <dependency>
