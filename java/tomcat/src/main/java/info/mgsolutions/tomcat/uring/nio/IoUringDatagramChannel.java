@@ -30,12 +30,12 @@ public class IoUringDatagramChannel extends DatagramChannel {
 
 	@Override
 	public DatagramChannel bind(final SocketAddress local) throws IOException {
-		return null;
+		return this;
 	}
 
 	@Override
 	public <T> DatagramChannel setOption(final SocketOption<T> name, final T value) throws IOException {
-		return null;
+		return this;
 	}
 
 	@Override

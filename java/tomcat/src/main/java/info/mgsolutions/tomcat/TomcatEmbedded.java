@@ -1,5 +1,6 @@
 package info.mgsolutions.tomcat;
 
+import info.mgsolutions.tomcat.uring.nio.IoUringSelectorProvider;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.AprLifecycleListener;
@@ -11,7 +12,6 @@ import org.apache.coyote.http11.Http11NioProtocol;
 import org.apache.coyote.http2.Http2Protocol;
 
 import java.io.File;
-import java.nio.channels.spi.SelectorProvider;
 
 public class TomcatEmbedded {
 
@@ -20,6 +20,8 @@ public class TomcatEmbedded {
     private static final String MAX_THREADS = System.getProperty("tomcat.maxThreads", "200");
 
     public static void main(String[] args) throws Exception {
+
+        IoUringSelectorProvider.install();
 
         Tomcat tomcat = new Tomcat();
 

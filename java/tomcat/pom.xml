@@ -28,12 +28,6 @@
             <artifactId>tomcat-annotations-api</artifactId>
             <version>${tomcat.version}</version>
         </dependency>
-        <dependency>
-            <groupId>io.netty.incubator</groupId>
-            <artifactId>netty-incubator-transport-native-io_uring</artifactId>
-            <version>0.0.2.Final-SNAPSHOT</version>
-            <classifier>linux-x86_64</classifier>
-        </dependency>
 
         <dependency>
             <groupId>javax.ejb</groupId>
@@ -55,23 +49,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.graalvm.nativeimage</groupId>
-                <artifactId>native-image-maven-plugin</artifactId>
-                <version>20.2.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>native-image</goal>
-                        </goals>
-                        <phase>package</phase>
-                    </execution>
-                </executions>
-                <configuration>
-                    <imageName>embedded-tomcat-http2</imageName>
-                    <buildArgs>--no-fallback --report-unsupported-elements-at-runtime --enable-https -H:JNIConfigurationResources=META-INF/native-image/org.apache.tomcat.embed/tomcat-embed-core/tomcat-jni.json</buildArgs>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -108,5 +85,53 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>graalvm</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.graalvm.nativeimage</groupId>
+                        <artifactId>native-image-maven-plugin</artifactId>
+                        <version>20.2.0</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>native-image</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <imageName>embedded-tomcat-http2</imageName>
+                            <buildArgs>--no-fallback --report-unsupported-elements-at-runtime --enable-https -H:JNIConfigurationResources=META-INF/native-image/org.apache.tomcat.embed/tomcat-embed-core/tomcat-jni.json</buildArgs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>panama</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.linux.lib</groupId>
+                    <artifactId>iouring-java</artifactId>
+                    <version>1.0-SNAPSHOT</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>netty</id>
+            <dependencies>
+                <dependency>
+                    <groupId>io.netty.incubator</groupId>
+                    <artifactId>netty-incubator-transport-native-io_uring</artifactId>
+                    <version>0.0.3.Final-SNAPSHOT</version>
+                    <classifier>linux-x86_64</classifier>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
 </project>

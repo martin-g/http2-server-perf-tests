@@ -24,12 +24,12 @@ public class IoUringSelector extends AbstractSelector {
 
 	@Override
 	protected void implCloseSelector() throws IOException {
-
+		throw new UnsupportedOperationException("info.mgsolutions.tomcat.uring.nio.IoUringSelector.implCloseSelector");
 	}
 
 	@Override
 	protected SelectionKey register(final AbstractSelectableChannel ch, final int ops, final Object att) {
-		return null;
+		return new IoUringSelectionKey();
 	}
 
 	@Override
