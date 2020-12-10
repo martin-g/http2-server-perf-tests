@@ -1,8 +1,5 @@
 package info.mgsolutions.tomcat.uring.nio;
 
-//import io.netty.incubator.channel.uring.Native;
-//import io.netty.incubator.channel.uring.RingBuffer;
-
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -11,6 +8,7 @@ import java.net.ProtocolFamily;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.Pipe;
 import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.AbstractSelector;
 import java.nio.channels.spi.SelectorProvider;
 
@@ -79,7 +77,7 @@ public class IoUringSelectorProvider extends SelectorProvider {
 		final Field modifiersField = getField(Field.class, "modifiers");
 		modifiersField.setAccessible(true);
 		modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL );
-		final boolean canAccess = field.canAccess(target);
+		final boolean canAccess = field.isAccessible();
 		try {
 			field.setAccessible(true);
 			field.set(target, value);
@@ -132,13 +130,13 @@ public class IoUringSelectorProvider extends SelectorProvider {
 	}
 
 	@Override
-	public IoUringServerSocketChannel openServerSocketChannel() throws IOException {
+	public ServerSocketChannel openServerSocketChannel() throws IOException {
 		final ServerSocketChannel delegateServerSocketChannel = delegate.openServerSocketChannel();
 		return new IoUringServerSocketChannel(this, delegateServerSocketChannel);
 	}
 
 	@Override
-	public IoUringSocketChannel openSocketChannel() throws IOException {
+	public SocketChannel openSocketChannel() throws IOException {
 		return new IoUringSocketChannel(this);
 	}
 

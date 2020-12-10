@@ -5,15 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>info.mgsolutions</groupId>
-    <artifactId>tomcat-embedded</artifactId>
+    <artifactId>tomcat_embedded</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>16</java.version>
-        <tomcat.version>9.0.40</tomcat.version>
+        <java.version>8</java.version>
+        <tomcat.version>9.0.41</tomcat.version>
         <tomcat-embed.version>${tomcat.version}</tomcat-embed.version>
+        <hawtjni.version>1.18</hawtjni.version>
     </properties>
 
 
@@ -131,6 +132,35 @@
                     <classifier>linux-x86_64</classifier>
                 </dependency>
             </dependencies>
+        </profile>
+        <profile>
+            <id>hawtjni</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.fusesource.hawtjni</groupId>
+                    <artifactId>hawtjni-runtime</artifactId>
+                    <version>${hawtjni.version}</version>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.fusesource.hawtjni</groupId>
+                        <artifactId>hawtjni-maven-plugin</artifactId>
+                        <version>${hawtjni.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>generate</goal>
+                                    <goal>build</goal>
+                                    <goal>package-jar</goal>
+                                    <goal>package-source</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 
