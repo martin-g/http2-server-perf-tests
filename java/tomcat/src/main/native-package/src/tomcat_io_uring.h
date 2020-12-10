@@ -1,3 +1,6 @@
+// needed for O_DIRECT open() flag. TODO REMOVE ME
+#define _GNU_SOURCE
+
 #include <stdio.h>
 #include <netinet/in.h>
 #include <string.h>
@@ -7,8 +10,10 @@
 #include <signal.h>
 #include <liburing.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <fcntl.h>
 #include <sys/utsname.h>
+#include <liburing.h>
 
 #define SERVER_STRING           "Server: zerohttpd/0.1\r\n"
 #define DEFAULT_SERVER_PORT     8000
@@ -22,12 +27,9 @@
 #define MIN_KERNEL_VERSION      5
 #define MIN_MAJOR_VERSION       5
 
-//struct request {
-//    int event_type;
-//    int iovec_count;
-//    int client_socket;
-//    struct iovec iov[];
-//};
 
 void myprint(const char *arg);
+
+#define QD      4
+int doWork();
 

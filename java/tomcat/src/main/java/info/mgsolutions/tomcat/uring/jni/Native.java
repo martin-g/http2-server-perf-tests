@@ -24,7 +24,11 @@ public class Native {
 	@JniMethod
 	public static native void myprint(String text);
 
-//	@JniClass(flags = {ClassFlag.STRUCT})
+	@JniMethod
+	public static native int doWork();
+
+
+	//	@JniClass(flags = {ClassFlag.STRUCT})
 //	public static class Iovec {
 //
 //		static {

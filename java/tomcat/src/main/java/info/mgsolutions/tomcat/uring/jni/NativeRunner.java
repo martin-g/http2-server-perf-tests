@@ -11,7 +11,12 @@ public class NativeRunner {
 				Native.myprint(arg);
 			}
 		} else {
-			Native.myprint("Blah!");
+			final int result = Native.doWork();
+			if (result == 0) {
+				System.out.println("Success");
+			} else {
+				System.err.println("Error: " + result);
+			}
 		}
 	}
 

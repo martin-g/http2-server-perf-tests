@@ -1,7 +1,5 @@
 package info.mgsolutions.tomcat.uring.nio;
 
-import sun.misc.Unsafe;
-
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.net.ProtocolFamily;
