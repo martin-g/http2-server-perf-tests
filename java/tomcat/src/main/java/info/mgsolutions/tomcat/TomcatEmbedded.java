@@ -70,6 +70,8 @@ public class TomcatEmbedded {
             connector.setSecure(true);
             connector.setProperty("sslProtocol", "TLS");
             connector.setProperty("SSLEnabled", "true");
+            // Unix Domain Socket
+            connector.setProperty("path", "/tmp/tomcat-uds.sock");
 //            connector.setProperty("SSLCertificateFile", TESTBED_HOME + "/etc/tls/server.pem");
 //            connector.setProperty("SSLCertificateKeyFile", TESTBED_HOME + "/etc/tls/server.key");
 //
