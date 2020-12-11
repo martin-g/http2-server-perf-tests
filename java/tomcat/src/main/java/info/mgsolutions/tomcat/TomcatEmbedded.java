@@ -1,5 +1,6 @@
 package info.mgsolutions.tomcat;
 
+import org.apache.catalina.LifecycleException;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.AprLifecycleListener;
@@ -11,8 +12,10 @@ import org.apache.coyote.http11.Http11NioProtocol;
 import org.apache.coyote.http2.Http2Protocol;
 import org.apache.tomcat.util.net.SSLHostConfig;
 import org.apache.tomcat.util.net.SSLHostConfigCertificate;
+import sun.misc.Signal;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 public class TomcatEmbedded {
 
@@ -49,6 +52,7 @@ public class TomcatEmbedded {
         Connector connector = new Connector(protocolName);
         if (Http11AprProtocol.class.getName().equals(protocolName)) {
             connector.addLifecycleListener(new AprLifecycleListener());
+            ((Http11AprProtocol) connector.getProtocolHandler()).setPath(Paths.get("/tmp/tomcat-uds.sock"));
         }
 
         tomcat.setConnector(connector);
@@ -70,8 +74,6 @@ public class TomcatEmbedded {
             connector.setSecure(true);
             connector.setProperty("sslProtocol", "TLS");
             connector.setProperty("SSLEnabled", "true");
-            // Unix Domain Socket
-            connector.setProperty("path", "/tmp/tomcat-uds.sock");
 //            connector.setProperty("SSLCertificateFile", TESTBED_HOME + "/etc/tls/server.pem");
 //            connector.setProperty("SSLCertificateKeyFile", TESTBED_HOME + "/etc/tls/server.key");
 //
@@ -88,6 +90,15 @@ public class TomcatEmbedded {
         System.out.println("=== Starting : " + connector);
         tomcat.start();
         System.out.println("=== Started");
+
+        Signal.handle(new Signal("INT"), (sig) -> {
+            try {
+                tomcat.getServer().stop();
+            } catch (LifecycleException e) {
+                e.printStackTrace();
+            }
+        });
+
         tomcat.getServer().await();
         System.out.println("=== Stopped");
     }
