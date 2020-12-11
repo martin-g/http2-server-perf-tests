@@ -9,6 +9,8 @@ import org.apache.coyote.http11.Http11AprProtocol;
 import org.apache.coyote.http11.Http11Nio2Protocol;
 import org.apache.coyote.http11.Http11NioProtocol;
 import org.apache.coyote.http2.Http2Protocol;
+import org.apache.tomcat.util.net.SSLHostConfig;
+import org.apache.tomcat.util.net.SSLHostConfigCertificate;
 
 import java.io.File;
 
@@ -48,6 +50,7 @@ public class TomcatEmbedded {
         if (Http11AprProtocol.class.getName().equals(protocolName)) {
             connector.addLifecycleListener(new AprLifecycleListener());
         }
+
         tomcat.setConnector(connector);
         connector.setPort(PORT);
         connector.setProperty("maxThreads", MAX_THREADS);
@@ -67,8 +70,17 @@ public class TomcatEmbedded {
             connector.setSecure(true);
             connector.setProperty("sslProtocol", "TLS");
             connector.setProperty("SSLEnabled", "true");
-            connector.setProperty("SSLCertificateFile", TESTBED_HOME + "/etc/tls/server.pem");
-            connector.setProperty("SSLCertificateKeyFile", TESTBED_HOME + "/etc/tls/server.key");
+//            connector.setProperty("SSLCertificateFile", TESTBED_HOME + "/etc/tls/server.pem");
+//            connector.setProperty("SSLCertificateKeyFile", TESTBED_HOME + "/etc/tls/server.key");
+//
+            SSLHostConfig sslHostConfig = new SSLHostConfig();
+            sslHostConfig.setHostName("_default_");
+            SSLHostConfigCertificate certificate = new SSLHostConfigCertificate(sslHostConfig, SSLHostConfigCertificate.Type.RSA);
+            certificate.setCertificateFile(TESTBED_HOME + "/etc/tls/server.pem");
+            certificate.setCertificateKeyFile(TESTBED_HOME + "/etc/tls/server.key");
+            sslHostConfig.addCertificate(certificate);
+            connector.addSslHostConfig(sslHostConfig);
+
         }
 
         System.out.println("=== Starting : " + connector);
