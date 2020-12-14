@@ -1,6 +1,7 @@
 package info.mgsolutions.tomcat;
 
 import info.mgsolutions.tomcat.uring.nio.IoUringSelectorProvider;
+import org.apache.catalina.LifecycleException;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.AprLifecycleListener;
@@ -10,9 +11,27 @@ import org.apache.coyote.http11.Http11AprProtocol;
 import org.apache.coyote.http11.Http11Nio2Protocol;
 import org.apache.coyote.http11.Http11NioProtocol;
 import org.apache.coyote.http2.Http2Protocol;
+import org.apache.tomcat.util.net.SSLHostConfig;
+import org.apache.tomcat.util.net.SSLHostConfigCertificate;
+import sun.misc.Signal;
 
 import java.io.File;
+import java.nio.file.Paths;
 
+/**
+ * Starts an embedded Tomcat for testing Tomcat's protocols (NIO, NIO2 and APR).
+ *
+ * <p>JVM arguments:
+ *  <ul>
+ *      <li>-Dtomcat.port=1234, default = 8080</li>
+ *      <li>-Dtomcat.maxThreads=1234, default = 200</li>
+ *      <li>-Dtomcat.tomcat.protocol=nio2, default = nio. Possible values: nio, nio2, apr, apr-uds</li>
+ *      <li>-Dtomcat.h2c=true, default = false</li>
+ *      <li>-Dtomcat.http2=true, default = false</li>
+ *      <li>-Dtomcat.tls=true, default = false</li>
+ *  </ul>
+ * </p>
+ */
 public class TomcatEmbedded {
 
     private static final String TESTBED_HOME = System.getenv("TESTBED_HOME");
@@ -40,7 +59,7 @@ public class TomcatEmbedded {
             protocolName = Http11NioProtocol.class.getName();
         } else if ("nio2".equals(protocolName)) {
             protocolName = Http11Nio2Protocol.class.getName();
-        } else if ("apr".equals(protocolName)) {
+        } else if (protocolName.startsWith("apr")) {
             protocolName = Http11AprProtocol.class.getName();
         } else {
             throw new IllegalArgumentException("Unknown protocol name: " + protocolName);
@@ -50,7 +69,12 @@ public class TomcatEmbedded {
         Connector connector = new Connector(protocolName);
         if (Http11AprProtocol.class.getName().equals(protocolName)) {
             connector.addLifecycleListener(new AprLifecycleListener());
+
+            if (protocolName.contains("uds")) {
+//                ((Http11AprProtocol) connector.getProtocolHandler()).setPath(Paths.get("/tmp/tomcat-uds.sock"));
+            }
         }
+
         tomcat.setConnector(connector);
         connector.setPort(PORT);
         connector.setProperty("maxThreads", MAX_THREADS);
@@ -70,14 +94,33 @@ public class TomcatEmbedded {
             connector.setSecure(true);
             connector.setProperty("sslProtocol", "TLS");
             connector.setProperty("SSLEnabled", "true");
-            connector.setProperty("SSLCertificateFile", TESTBED_HOME + "/etc/tls/server.pem");
-            connector.setProperty("SSLCertificateKeyFile", TESTBED_HOME + "/etc/tls/server.key");
+//            connector.setProperty("SSLCertificateFile", TESTBED_HOME + "/etc/tls/server.pem");
+//            connector.setProperty("SSLCertificateKeyFile", TESTBED_HOME + "/etc/tls/server.key");
+//
+            SSLHostConfig sslHostConfig = new SSLHostConfig();
+            sslHostConfig.setHostName("_default_");
+            SSLHostConfigCertificate certificate = new SSLHostConfigCertificate(sslHostConfig, SSLHostConfigCertificate.Type.RSA);
+            certificate.setCertificateFile(TESTBED_HOME + "/etc/tls/server.pem");
+            certificate.setCertificateKeyFile(TESTBED_HOME + "/etc/tls/server.key");
+            sslHostConfig.addCertificate(certificate);
+            connector.addSslHostConfig(sslHostConfig);
+
         }
 
         System.out.println("=== Starting : " + connector);
         tomcat.start();
         System.out.println("=== Started");
+
+        Signal.handle(new Signal("INT"), (sig) -> {
+            try {
+                tomcat.getServer().stop();
+            } catch (LifecycleException e) {
+                e.printStackTrace();
+            }
+        });
+
         tomcat.getServer().await();
         System.out.println("=== Stopped");
     }
 }
+
