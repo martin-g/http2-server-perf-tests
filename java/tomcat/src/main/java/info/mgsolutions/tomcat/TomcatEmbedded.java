@@ -17,6 +17,20 @@ import sun.misc.Signal;
 import java.io.File;
 import java.nio.file.Paths;
 
+/**
+ * Starts an embedded Tomcat for testing Tomcat's protocols (NIO, NIO2 and APR).
+ *
+ * <p>JVM arguments:
+ *  <ul>
+ *      <li>-Dtomcat.port=1234, default = 8080</li>
+ *      <li>-Dtomcat.maxThreads=1234, default = 200</li>
+ *      <li>-Dtomcat.tomcat.protocol=nio2, default = nio. Possible values: nio, nio2, apr, apr-uds</li>
+ *      <li>-Dtomcat.h2c=true, default = false</li>
+ *      <li>-Dtomcat.http2=true, default = false</li>
+ *      <li>-Dtomcat.tls=true, default = false</li>
+ *  </ul>
+ * </p>
+ */
 public class TomcatEmbedded {
 
     private static final String TESTBED_HOME = System.getenv("TESTBED_HOME");
@@ -42,7 +56,7 @@ public class TomcatEmbedded {
             protocolName = Http11NioProtocol.class.getName();
         } else if ("nio2".equals(protocolName)) {
             protocolName = Http11Nio2Protocol.class.getName();
-        } else if ("apr".equals(protocolName)) {
+        } else if (protocolName.startsWith("apr")) {
             protocolName = Http11AprProtocol.class.getName();
         } else {
             throw new IllegalArgumentException("Unknown protocol name: " + protocolName);
@@ -52,7 +66,10 @@ public class TomcatEmbedded {
         Connector connector = new Connector(protocolName);
         if (Http11AprProtocol.class.getName().equals(protocolName)) {
             connector.addLifecycleListener(new AprLifecycleListener());
-            ((Http11AprProtocol) connector.getProtocolHandler()).setPath(Paths.get("/tmp/tomcat-uds.sock"));
+
+            if (protocolName.contains("uds")) {
+                ((Http11AprProtocol) connector.getProtocolHandler()).setPath(Paths.get("/tmp/tomcat-uds.sock"));
+            }
         }
 
         tomcat.setConnector(connector);
