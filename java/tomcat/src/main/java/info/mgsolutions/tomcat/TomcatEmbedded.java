@@ -94,9 +94,7 @@ public class TomcatEmbedded {
             connector.setSecure(true);
             connector.setProperty("sslProtocol", "TLS");
             connector.setProperty("SSLEnabled", "true");
-//            connector.setProperty("SSLCertificateFile", TESTBED_HOME + "/etc/tls/server.pem");
-//            connector.setProperty("SSLCertificateKeyFile", TESTBED_HOME + "/etc/tls/server.key");
-//
+
             SSLHostConfig sslHostConfig = new SSLHostConfig();
             sslHostConfig.setHostName("_default_");
             SSLHostConfigCertificate certificate = new SSLHostConfigCertificate(sslHostConfig, SSLHostConfigCertificate.Type.RSA);
