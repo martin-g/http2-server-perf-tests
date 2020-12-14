@@ -68,7 +68,7 @@ public class TomcatEmbedded {
             connector.addLifecycleListener(new AprLifecycleListener());
 
             if (protocolName.contains("uds")) {
-                ((Http11AprProtocol) connector.getProtocolHandler()).setPath(Paths.get("/tmp/tomcat-uds.sock"));
+//                ((Http11AprProtocol) connector.getProtocolHandler()).setPath(Paths.get("/tmp/tomcat-uds.sock"));
             }
         }
 
@@ -120,3 +120,4 @@ public class TomcatEmbedded {
         System.out.println("=== Stopped");
     }
 }
+
