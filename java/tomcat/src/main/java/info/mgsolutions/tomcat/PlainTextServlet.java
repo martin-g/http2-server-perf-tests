@@ -25,21 +25,16 @@ public class PlainTextServlet extends HttpServlet {
 	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
 		resp.setContentType(CONTENT_TYPE);
 		resp.setContentLength(CONTENT_LENGTH);
-		final ServletOutputStream outputStream = resp.getOutputStream();
-		try {
+		try (ServletOutputStream outputStream = resp.getOutputStream()) {
 			outputStream.write(CONTENT_AS_BYTES);
-			outputStream.flush();
-		} finally {
-			outputStream.close();
 		}
 	}
 
 	@Override
 	protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
 		resp.setContentType(CONTENT_TYPE);
-		final Writer out = resp.getWriter();
-		final String payload = req.getParameter("payload");
-		try {
+		try (Writer out = resp.getWriter()) {
+			final String payload = req.getParameter("payload");
 			if (payload != null) {
 				resp.setContentLength(payload.length());
 				out.write(payload);
@@ -47,9 +42,6 @@ public class PlainTextServlet extends HttpServlet {
 				resp.setContentLength(CONTENT_LENGTH);
 				out.write(CONTENT_AS_STRING);
 			}
-			out.flush();
-		} finally {
-			out.close();
 		}
 	}
 }
