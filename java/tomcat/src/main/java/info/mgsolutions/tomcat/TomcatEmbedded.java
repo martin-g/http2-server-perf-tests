@@ -110,10 +110,11 @@ public class TomcatEmbedded {
 
         Signal.handle(new Signal("INT"), (sig) -> {
             try {
-                tomcat.getServer().stop();
+                tomcat.stop();
             } catch (LifecycleException e) {
                 e.printStackTrace();
             }
+            System.exit(0);
         });
 
         tomcat.getServer().await();
