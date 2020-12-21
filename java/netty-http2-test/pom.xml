@@ -11,7 +11,7 @@
     <properties>
         <application.class>com.example.netty.http2.Http2Server</application.class>
         <java.version>16</java.version>
-        <netty.version>4.1.54.Final</netty.version>
+        <netty.version>4.1.56.Final</netty.version>
     </properties>
 
     <dependencies>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>io.netty.incubator</groupId>
             <artifactId>netty-incubator-transport-native-io_uring</artifactId>
-            <version>0.0.2.Final-SNAPSHOT</version>
+            <version>0.0.3.Final-SNAPSHOT</version>
             <classifier>linux-x86_64</classifier>
         </dependency>
         <dependency>
