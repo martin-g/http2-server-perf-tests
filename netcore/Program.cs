@@ -45,6 +45,7 @@ namespace netcore_http2
                             endpoints.Map("/", httpContext =>
                             {
                                 httpContext.Response.ContentType = "text/plain; charset=utf-8";
+                                httpContext.Response.ContentLength = 12;
                                 httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
 
                                 return httpContext.Response.WriteAsync("Hello world!");

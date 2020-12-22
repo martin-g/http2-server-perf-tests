@@ -25,5 +25,5 @@ func main() {
 
 func handle(w http.ResponseWriter, r *http.Request) {
   // log.Printf("Got connection: %s", r.Proto)
-  fmt.Fprintf(w, "Hello World")
+  fmt.Fprintf(w, "Hello World!")
 }

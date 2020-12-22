@@ -13,10 +13,16 @@ import io.netty.handler.codec.http2.Http2Headers;
 import io.netty.handler.codec.http2.Http2HeadersFrame;
 import io.netty.util.CharsetUtil;
 
+import java.nio.charset.StandardCharsets;
+
 @Sharable
 public class Http2ServerResponseHandler extends ChannelDuplexHandler {
 
-    static final ByteBuf RESPONSE_BYTES = Unpooled.unreleasableBuffer(Unpooled.copiedBuffer("Hello world!", CharsetUtil.UTF_8));
+    private static final String CONTENT_TYPE = "text/plain;charset=UTF-8";
+    private static final String CONTENT_AS_STRING = "Hello world!";
+    private static final byte[] CONTENT_AS_BYTES = CONTENT_AS_STRING.getBytes(StandardCharsets.UTF_8);
+    private static final int CONTENT_LENGTH = CONTENT_AS_BYTES.length;
+    static final ByteBuf RESPONSE_BYTES = Unpooled.unreleasableBuffer(Unpooled.copiedBuffer(CONTENT_AS_STRING, CharsetUtil.UTF_8));
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
@@ -35,6 +41,9 @@ public class Http2ServerResponseHandler extends ChannelDuplexHandler {
                 content.writeBytes(RESPONSE_BYTES.duplicate());
 
                 Http2Headers headers = new DefaultHttp2Headers().status(HttpResponseStatus.OK.codeAsText());
+                headers.set("Content-Type", CONTENT_TYPE);
+                headers.setInt("Content-Length", CONTENT_LENGTH);
+                headers.set("Date", "Tue, 22 Dec 2020 08:03:41 GMT");
                 ctx.write(new DefaultHttp2HeadersFrame(headers).stream(msgHeader.stream()));
                 ctx.write(new DefaultHttp2DataFrame(content, true).stream(msgHeader.stream()));
             }

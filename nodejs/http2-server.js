@@ -12,7 +12,8 @@ server.on('error', (err) => console.error(err));
 server.on('stream', (stream, headers) => {
     stream.respond({
         'content-type': 'text/plain; charset=utf-8',
-        ':status': 200
+        ':status': 200,
+        'content-lenght': 12
     });
     stream.end('Hello world!');
 });
